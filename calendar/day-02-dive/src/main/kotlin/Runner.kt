@@ -1,5 +1,6 @@
 import Utils.splitLineBy
 import models.Command
+import models.Coordinates
 import models.Direction
 import kotlin.io.path.Path
 
@@ -10,17 +11,30 @@ object Runner {
             .splitLineBy()
             .map { Command(Direction.valueOf(it[0].uppercase()), it[1].toInt()) }
 
-        val submarinePosition = moveSubmarine(commands)
-        println("Position of submarine is (${submarinePosition.first}, ${submarinePosition.second}) " +
-                "and product of position is ${submarinePosition.first * submarinePosition.second}")
+        val submarinePosition: Coordinates = moveSubmarine(commands)
+        println("Position of submarine is (${submarinePosition.x}, ${submarinePosition.y}) " +
+                "and product of position is ${submarinePosition.x * submarinePosition.y}")
+
+        val submarinePositionWithAim: Coordinates = moveSubmarineWithAim(commands)
+        println("Position of submarine is (${submarinePositionWithAim.x}, ${submarinePositionWithAim.y}, ${submarinePositionWithAim.aim}) " +
+                "and product of position is ${submarinePositionWithAim.x * submarinePositionWithAim.y}")
     }
 
-    private fun moveSubmarine(commands: List<Command>) : Pair<Int, Int> = commands
-        .fold(Pair(0, 0)) { acc, command ->
+    private fun moveSubmarine(commands: List<Command>) : Coordinates = commands
+        .fold(Coordinates()) { acc, command ->
             when(command.direction) {
-                Direction.DOWN -> Pair(acc.first, acc.second + command.value)
-                Direction.UP -> Pair(acc.first, acc.second - command.value)
-                Direction.FORWARD -> Pair(acc.first + command.value, acc.second)
+                Direction.DOWN -> Coordinates(acc.x, acc.y + command.value)
+                Direction.UP -> Coordinates(acc.x, acc.y - command.value)
+                Direction.FORWARD -> Coordinates(acc.x + command.value, acc.y)
+            }
+        }
+
+    private fun moveSubmarineWithAim(commands: List<Command>) : Coordinates = commands
+        .fold(Coordinates(aim = 0)) { acc, command ->
+            when(command.direction) {
+                Direction.DOWN -> Coordinates(acc.x, acc.y, acc.aim!! + command.value)
+                Direction.UP -> Coordinates(acc.x, acc.y, acc.aim!! - command.value)
+                Direction.FORWARD -> Coordinates(acc.x + command.value, acc.y + acc.aim!! * command.value, acc.aim)
             }
         }
 }
