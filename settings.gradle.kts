@@ -5,4 +5,5 @@ include(
     "calendar",
     "calendar:day-01-sonar-sweep",
     "calendar:day-02-dive",
+    "calendar:day-03-binary-diagnostic",
 )
