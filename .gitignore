@@ -1,0 +1,19 @@
+### Java ###
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+### Gradle ###
+.gradle
+build
+
+!gradle-wrapper.jar
+
+### IDE ###
+.idea
+
+### Data ###
+data.txt
