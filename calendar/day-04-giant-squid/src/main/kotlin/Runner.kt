@@ -1,8 +1,6 @@
-import Utils.splitLineBy
 import models.Board
 import models.Cell
 import kotlin.io.path.Path
-import kotlin.math.ceil
 
 object Runner {
 
@@ -16,6 +14,9 @@ object Runner {
 
         val score = playBingo(boards, numbers)
         println("Score: $score")
+
+        val losingScore = playBingoToLose(boards, numbers)
+        println("Losing score: $losingScore")
     }
 
     private fun createBoards(data: List<String>): List<Board> {
@@ -40,6 +41,28 @@ object Runner {
                     val isWin = checkIfWin(board, cord.first, cord.second)
                     if (isWin) {
                         return calculateScore(board, number)
+                    }
+                }
+            }
+        }
+        return null
+    }
+
+    private fun playBingoToLose(boards: List<Board>, numbers: List<Int>): Int? {
+        val ignoredBoardsIdx = mutableListOf<Int>()
+        numbers.forEach { number ->
+            boards.forEachIndexed { index, board ->
+                if (!ignoredBoardsIdx.contains(index)) {
+                    val cord = markValue(board, number)
+                    if (cord != null) {
+                        val isWin = checkIfWin(board, cord.first, cord.second)
+                        if (isWin) {
+                            if (ignoredBoardsIdx.size == boards.size - 1) {
+                                return calculateScore(board, number)
+                            } else {
+                                ignoredBoardsIdx += index
+                            }
+                        }
                     }
                 }
             }
