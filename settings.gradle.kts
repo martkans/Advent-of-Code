@@ -10,4 +10,5 @@ include(
     "calendar:day-05-hydrothermal-venture",
     "calendar:day-06-lanternfish",
     "calendar:day-07-the-treachery-of-whales",
+    "calendar:day-08-seven-segment-search",
 )
