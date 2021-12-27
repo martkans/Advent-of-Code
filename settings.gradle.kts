@@ -8,4 +8,5 @@ include(
     "calendar:day-03-binary-diagnostic",
     "calendar:day-04-giant-squid",
     "calendar:day-05-hydrothermal-venture",
+    "calendar:day-06-lanternfish",
 )

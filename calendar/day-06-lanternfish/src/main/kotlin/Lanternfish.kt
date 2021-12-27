@@ -1,0 +1,1 @@
+data class Lanternfish(var daysToNew: Int = 8, var isNewLanternfish: Boolean = true)

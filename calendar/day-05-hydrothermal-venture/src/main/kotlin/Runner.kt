@@ -19,7 +19,8 @@ object Runner {
         println("Points do at least two lines overlap $pointsOverlappedMoreThanTwice")
 
         val overlappedPointsWithDiagonals = getOverlappedPointsBy(lines, true)
-        val pointsOverlappedMoreThanTwiceWithDiagonals = countPointsOverlappedMoreOrEqualThan(2, overlappedPointsWithDiagonals)
+        val pointsOverlappedMoreThanTwiceWithDiagonals =
+            countPointsOverlappedMoreOrEqualThan(2, overlappedPointsWithDiagonals)
         println("Points do at least two lines overlap with diagonals $pointsOverlappedMoreThanTwiceWithDiagonals")
     }
 
@@ -43,14 +44,14 @@ object Runner {
         else (line.p2.x..line.p1.x).map { Point(it, line.p1.y) }
 
     private fun drawVerticalLine(line: Line): List<Point> =
-        if(line.p1.y < line.p2.y) (line.p1.y..line.p2.y).map { Point(line.p1.x, it) }
+        if (line.p1.y < line.p2.y) (line.p1.y..line.p2.y).map { Point(line.p1.x, it) }
         else (line.p2.y..line.p1.y).map { Point(line.p1.x, it) }
 
     private fun drawDiagonalLine(line: Line): List<Point> {
         val xInc: Int
         val yInc: Int
         if (line.p1.x < line.p2.x) {
-            if(line.p1.y < line.p2.y) {
+            if (line.p1.y < line.p2.y) {
                 xInc = 1
                 yInc = 1
             } else {
@@ -58,7 +59,7 @@ object Runner {
                 yInc = -1
             }
         } else {
-            if(line.p1.y < line.p2.y) {
+            if (line.p1.y < line.p2.y) {
                 xInc = -1
                 yInc = 1
             } else {
@@ -79,8 +80,6 @@ object Runner {
         return points
     }
 
-
-
-    private fun countPointsOverlappedMoreOrEqualThan(times: Int, points: List<OverlappingPoint>): Int
-        = points.count { it.overlapping >= times }
+    private fun countPointsOverlappedMoreOrEqualThan(times: Int, points: List<OverlappingPoint>): Int =
+        points.count { it.overlapping >= times }
 }
