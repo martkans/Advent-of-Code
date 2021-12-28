@@ -11,4 +11,5 @@ include(
     "calendar:day-06-lanternfish",
     "calendar:day-07-the-treachery-of-whales",
     "calendar:day-08-seven-segment-search",
+    "calendar:day-09-smoke-basin",
 )
