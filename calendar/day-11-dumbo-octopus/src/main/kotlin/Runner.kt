@@ -7,11 +7,21 @@ object Runner {
             .map { row -> row.split("").filter { it.isNotEmpty() }.map { it.toInt() }.toMutableList() }
             .toMutableList()
 
-        println("Total octopus flashes after 100 steps: ${processNStepsOfOctopusLife(100, dumboOctopuses)}")
+//        println("Total octopus flashes after 100 steps: ${processNStepsOfOctopusLife(100, dumboOctopuses)}")
+        println("Total steps after flashes is synchronized: ${processStepsUntilFlashesSynchronized(dumboOctopuses)}")
     }
 
     private fun processNStepsOfOctopusLife(n: Int, dumboOctopuses: MutableList<MutableList<Int>>): Int =
         (1..n).sumOf { processStep(dumboOctopuses) }
+
+    private fun processStepsUntilFlashesSynchronized(dumboOctopuses: MutableList<MutableList<Int>>): Int {
+        var stepsToFlashesSynchronized = 0
+        while (!isFlashesSynchronized(dumboOctopuses)) {
+            processStep(dumboOctopuses)
+            stepsToFlashesSynchronized++
+        }
+        return stepsToFlashesSynchronized
+    }
 
     private fun processStep(dumboOctopuses: MutableList<MutableList<Int>>): Int {
         var octopusesFlashingInThisStepCounter = 0
@@ -82,4 +92,7 @@ object Runner {
             else copyOfDumboOctopuses[x][y] = dumboOctopuses[x][y]
         }
     }
+
+    private fun isFlashesSynchronized(dumboOctopuses: List<List<Int>>) =
+        dumboOctopuses.sumOf { row -> row.count { it != 0 } } == 0
 }
