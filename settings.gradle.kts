@@ -13,4 +13,5 @@ include(
     "calendar:day-08-seven-segment-search",
     "calendar:day-09-smoke-basin",
     "calendar:day-10-syntax-scoring",
+    "calendar:day-11-dumbo-octopus",
 )
