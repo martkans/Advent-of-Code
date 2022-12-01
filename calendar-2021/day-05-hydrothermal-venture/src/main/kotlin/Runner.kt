@@ -7,7 +7,7 @@ import kotlin.io.path.Path
 object Runner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val lines = Utils.readFile(Path("calendar/day-05-hydrothermal-venture/src/main/resources/data.txt"))
+        val lines = Utils.readFile(Path("calendar-2021/day-05-hydrothermal-venture/src/main/resources/data.txt"))
             .splitLineBy(" -> ")
             .map {
                 val s1 = it[0].split(',')

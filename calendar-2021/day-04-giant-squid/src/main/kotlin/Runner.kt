@@ -8,7 +8,7 @@ object Runner {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val data = Utils.readFile(Path("calendar/day-04-giant-squid/src/main/resources/data.txt"))
+        val data = Utils.readFile(Path("calendar-2021/day-04-giant-squid/src/main/resources/data.txt"))
         val numbers = data[0].split(",").map { it.toInt() }
         val boards = createBoards(data)
 

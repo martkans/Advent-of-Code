@@ -7,7 +7,7 @@ import kotlin.io.path.Path
 object Runner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val commands = Utils.readFile(Path("calendar/day-02-dive/src/main/resources/data.txt"))
+        val commands = Utils.readFile(Path("calendar-2021/day-02-dive/src/main/resources/data.txt"))
             .splitLineBy()
             .map { Command(Direction.valueOf(it[0].uppercase()), it[1].toInt()) }
 

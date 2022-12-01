@@ -5,7 +5,7 @@ object Runner {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val lines = Utils.readFile(Path("calendar/day-12-passage-pathing/src/main/resources/test-0-data.txt"))
+        val lines = Utils.readFile(Path("calendar-2021/day-12-passage-pathing/src/main/resources/test-0-data.txt"))
         convertLinesToCavesAndTunnels(lines)
 
         println(caves)

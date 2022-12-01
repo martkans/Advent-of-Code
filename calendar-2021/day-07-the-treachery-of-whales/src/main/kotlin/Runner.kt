@@ -4,7 +4,7 @@ import kotlin.math.abs
 object Runner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val crabSubmarinesPositions = Utils.readFile(Path("calendar/day-07-the-treachery-of-whales/src/main/resources/data.txt"))[0]
+        val crabSubmarinesPositions = Utils.readFile(Path("calendar-2021/day-07-the-treachery-of-whales/src/main/resources/data.txt"))[0]
             .split(',').map { it.toInt() }
 
         val minFuel = findPositionWithLeastFuelAmount(crabSubmarinesPositions)

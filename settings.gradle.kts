@@ -18,4 +18,5 @@ include(
     "calendar-2021:day-12-passage-pathing",
     // 2022
     "calendar-2022",
+    "calendar-2022:day-01-calorie-counting",
 )

@@ -3,7 +3,7 @@ import kotlin.io.path.Path
 object Runner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val measurements = Utils.readFile(Path("calendar/day-01-sonar-sweep/src/main/resources/data.txt"))
+        val measurements = Utils.readFile(Path("calendar-2021/day-01-sonar-sweep/src/main/resources/data.txt"))
             .map { it.toInt() }
 
         val result = countLargerMeasurements(measurements)

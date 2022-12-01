@@ -4,7 +4,7 @@ import kotlin.io.path.Path
 object Runner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val heightMap = Utils.readFile(Path("calendar/day-09-smoke-basin/src/main/resources/data.txt"))
+        val heightMap = Utils.readFile(Path("calendar-2021/day-09-smoke-basin/src/main/resources/data.txt"))
             .map { row -> row.split("").filter { it.isNotEmpty() }.map { it.toInt() }.toMutableList() }
             .toMutableList()
 

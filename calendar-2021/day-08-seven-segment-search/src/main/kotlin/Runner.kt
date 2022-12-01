@@ -5,7 +5,7 @@ import kotlin.streams.toList
 object Runner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val lines = Utils.readFile(Path("calendar/day-08-seven-segment-search/src/main/resources/data.txt"))
+        val lines = Utils.readFile(Path("calendar-2021/day-08-seven-segment-search/src/main/resources/data.txt"))
 
         val records = lines.map {
             val temp = it.split(" | ")

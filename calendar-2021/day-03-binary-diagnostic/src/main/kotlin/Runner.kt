@@ -6,7 +6,7 @@ import kotlin.math.ceil
 object Runner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val binaries = Utils.readFile(Path("calendar/day-03-binary-diagnostic/src/main/resources/data.txt"))
+        val binaries = Utils.readFile(Path("calendar-2021/day-03-binary-diagnostic/src/main/resources/data.txt"))
 
         val powerRates = calculatePowerRates(binaries)
         println("Gamma rate: ${powerRates.gammaRate.toInt(2)}, epsilon rate: ${powerRates.epsilonRate.toInt(2)}. " +

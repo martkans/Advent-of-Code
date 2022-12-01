@@ -31,7 +31,7 @@ object Runner {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val subsystemLines = Utils.readFile(Path("calendar/day-10-syntax-scoring/src/main/resources/data.txt"))
+        val subsystemLines = Utils.readFile(Path("calendar-2021/day-10-syntax-scoring/src/main/resources/data.txt"))
         
         println("Total score of corrupted lines: ${calculateScoreOfCorruptedLines(subsystemLines)}")
         println("Middle score of incomplete lines: ${middleScoreOfIncompleteLines(calculateScoresOfIncompleteLines(subsystemLines))}")

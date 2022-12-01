@@ -3,7 +3,7 @@ import kotlin.io.path.Path
 object Runner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val lanternfishesByDay = Utils.readFile(Path("calendar/day-06-lanternfish/src/main/resources/data.txt"))[0]
+        val lanternfishesByDay = Utils.readFile(Path("calendar-2021/day-06-lanternfish/src/main/resources/data.txt"))[0]
             .split(',').map { it.toInt() }.groupBy { it }
 
         val numOfLanternfishesByDay = MutableList(9) { 0L }
