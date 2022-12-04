@@ -19,4 +19,6 @@ include(
     // 2022
     "calendar-2022",
     "calendar-2022:day-01-calorie-counting",
+    "calendar-2022:day-02-rock-paper-scissors",
+    "calendar-2022:day-03-rucksack-reorganization",
 )
