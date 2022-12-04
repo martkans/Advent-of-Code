@@ -25,7 +25,7 @@ This strategy guide predicts and recommends the following:
 - The third round is a draw with both players choosing Scissors, giving you a score of 3 + 3 = `6`.
 In this example, if you were to follow the strategy guide, you would get a total score of `15` (`8` + `1` + `6`).
 
-**_`What would your total score be if everything goes exactly according to your strategy guide?**_
+**_What would your total score be if everything goes exactly according to your strategy guide?_**
 `
 ### --- Part Two ---
 
