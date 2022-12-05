@@ -22,4 +22,5 @@ include(
     "calendar-2022:day-02-rock-paper-scissors",
     "calendar-2022:day-03-rucksack-reorganization",
     "calendar-2022:day-04-camp-cleanup",
+    "calendar-2022:day-05-supply-stacks",
 )
