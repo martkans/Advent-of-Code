@@ -24,4 +24,5 @@ include(
     "calendar-2022:day-04-camp-cleanup",
     "calendar-2022:day-05-supply-stacks",
     "calendar-2022:day-06-tuning-trouble",
+    "calendar-2022:day-07-no-space-left-on-device",
 )
