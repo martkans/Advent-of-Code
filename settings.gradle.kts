@@ -25,4 +25,5 @@ include(
     "calendar-2022:day-05-supply-stacks",
     "calendar-2022:day-06-tuning-trouble",
     "calendar-2022:day-07-no-space-left-on-device",
+    "calendar-2022:day-08-treetop-tree-house",
 )
