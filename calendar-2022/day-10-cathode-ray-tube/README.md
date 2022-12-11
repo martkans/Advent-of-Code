@@ -1,71 +1,323 @@
-## --- Day 8: Treetop Tree House ---
+## --- Day 10: Cathode-Ray Tube ---
 
-The expedition comes across a peculiar patch of tall trees all planted carefully in a grid. The Elves explain that a previous expedition planted these trees as a reforestation effort. Now, they're curious if this would be a good location for a **_tree house_**.
+You avoid the ropes, plunge into the river, and swim to shore.
 
-First, determine whether there is enough tree cover here to keep a tree house hidden. To do this, you need to count the number of trees that are **_visible from outside the grid_** when looking directly along a row or column.
+The Elves yell something about meeting back up with them upriver, but the river is too loud to tell exactly what they're saying. They finish crossing the bridge and disappear from view.
 
-The Elves have already launched a **_quadcopter_** to generate a map with the height of each tree (your puzzle input). For example:
+Situations like this must be why the Elves prioritized getting the communication system on your handheld device working. You pull it out of your pack, but the amount of water slowly draining from a big crack in its screen tells you it probably won't be of much immediate use.
+
+**_Unless_**, that is, you can design a replacement for the device's video system! It seems to be some kind of **_cathode-ray tube_** screen and simple CPU that are both driven by a precise **_clock circuit_**. The clock circuit ticks at a constant rate; each tick is called a cycle.
+
+Start by figuring out the signal being sent by the CPU. The CPU has a single register, `X`, which starts with the value `1`. It supports only two instructions:
+
+- `addx V` takes **_two cycles_** to complete. **_After_** two cycles, the `X` register is increased by the value `V`. (`V` can be negative.)
+- `noop` takes **_one cycle_** to complete. It has no other effect.
+The CPU uses these instructions in a program (your puzzle input) to, somehow, tell the screen what to draw.
+
+Consider the following small program:
 ```
-30373
-25512
-65332
-33549
-35390
+noop
+addx 3
+addx -5
 ```
-Each tree is represented as a single digit whose value is its height, where `0` is the shortest and `9` is the tallest.
 
-A tree is **_visible_** if all of the other trees between it and an edge of the grid are **_shorter_** than it. Only consider trees in the same row or column; that is, only look up, down, left, or right from any given tree.
+Execution of this program proceeds as follows:
 
-All the trees around the edge of the grid are **_visible_** - since they are already on the edge, there are no trees to block the view. In this example, that only leaves the **_interior nine trees_** to consider:
-- The top-left `5` is **_visible_** from the left and top. (It isn't visible from the right or bottom since other trees of height `5` are in the way.)
-- The top-middle `5` is **_visible_** from the top and right.
-- The top-right `1` is not visible from any direction; for it to be visible, there would need to only be trees of height `0` between it and an edge.
-- The left-middle `5` is **_visible_**, but only from the right.
-- The center `3` is not visible from any direction; for it to be visible, there would need to be only trees of at most height `2` between it and an edge.
-- The right-middle `3` is **_visible_** from the right.
-- In the bottom row, the middle `5` is **_visible_**, but the `3` and `4` are not.
+_ At the start of the first cycle, the `noop` instruction begins execution. During the first cycle, `X` is `1`. After the first cycle, the noop instruction finishes execution, doing nothing.
+_ At the start of the second cycle, the `addx 3` instruction begins execution. During the second cycle, `X` is still `1`.
+_ During the third cycle, `X` is still `1`. After the third cycle, the `addx 3` instruction finishes execution, setting `X` to `4`.
+_ At the start of the fourth cycle, the `addx -5` instruction begins execution. During the fourth cycle, `X` is still `4`.
+_ During the fifth cycle, `X` is still `4`. After the fifth cycle, the `addx -5` instruction finishes execution, setting X to `-1`.
 
-With 16 trees visible on the edge and another 5 visible in the interior, a total of **_21_** trees are visible in this arrangement.
+Maybe you can learn something by looking at the value of the X register throughout execution. For now, consider the **_signal strength_** (the cycle number multiplied by the value of the `X` register) during the 20th cycle and every 40 cycles after that (that is, during the `20th`, `60th`, `100th`, `140th`, `180th`, and `220th` cycles).
 
-Consider your map; **_how many trees are visible from outside the grid?_**
+For example, consider this larger program:
+```
+addx 15
+addx -11
+addx 6
+addx -3
+addx 5
+addx -1
+addx -8
+addx 13
+addx 4
+noop
+addx -1
+addx 5
+addx -1
+addx 5
+addx -1
+addx 5
+addx -1
+addx 5
+addx -1
+addx -35
+addx 1
+addx 24
+addx -19
+addx 1
+addx 16
+addx -11
+noop
+noop
+addx 21
+addx -15
+noop
+noop
+addx -3
+addx 9
+addx 1
+addx -3
+addx 8
+addx 1
+addx 5
+noop
+noop
+noop
+noop
+noop
+addx -36
+noop
+addx 1
+addx 7
+noop
+noop
+noop
+addx 2
+addx 6
+noop
+noop
+noop
+noop
+noop
+addx 1
+noop
+noop
+addx 7
+addx 1
+noop
+addx -13
+addx 13
+addx 7
+noop
+addx 1
+addx -33
+noop
+noop
+noop
+addx 2
+noop
+noop
+noop
+addx 8
+noop
+addx -1
+addx 2
+addx 1
+noop
+addx 17
+addx -9
+addx 1
+addx 1
+addx -3
+addx 11
+noop
+noop
+addx 1
+noop
+addx 1
+noop
+noop
+addx -13
+addx -19
+addx 1
+addx 3
+addx 26
+addx -30
+addx 12
+addx -1
+addx 3
+addx 1
+noop
+noop
+noop
+addx -9
+addx 18
+addx 1
+addx 2
+noop
+noop
+addx 9
+noop
+noop
+noop
+addx -1
+addx 2
+addx -37
+addx 1
+addx 3
+noop
+addx 15
+addx -21
+addx 22
+addx -6
+addx 1
+noop
+addx 2
+addx 1
+noop
+addx -10
+noop
+noop
+addx 20
+addx 1
+addx 2
+addx 2
+addx -6
+addx -11
+noop
+noop
+noop
+```
+The interesting signal strengths can be determined as follows:
+- During the `20th` cycle, register `X` has the value `21`, so the signal strength is `20 * 21 = 420`. (The `20th` cycle occurs in the middle of the second `addx -1`, so the value of register `X` is the starting value, `1`, plus all of the other `addx` values up to that point: `1 + 15 - 11 + 6 - 3 + 5 - 1 - 8 + 13 + 4 = 21`.)
+- During the `60th` cycle, register `X` has the value `19`, so the signal strength is `60 * 19 = 1140`.
+- During the `100th` cycle, register `X` has the value `18`, so the signal strength is `100 * 18 = 1800`.
+- During the `140th` cycle, register `X` has the value `21`, so the signal strength is `140 * 21 = 2940`.
+- During the `180th` cycle, register `X` has the value `16`, so the signal strength is `180 * 16 = 2880`.
+- During the `220th` cycle, register `X` has the value `18`, so the signal strength is `220 * 18 = 3960`.
+
+The sum of these signal strengths is **_13140_**.
+
+Find the signal strength during the 20th, 60th, 100th, 140th, 180th, and 220th cycles. **_What is the sum of these six signal strengths?_**
 
 ### --- Part Two ---
 
-Content with the amount of tree cover available, the Elves just need to know the best spot to build their tree house: they would like to be able to see a lot of **_trees_**.
+It seems like the `X` register controls the horizontal position of a `sprite`. Specifically, the sprite is `3` pixels wide, and the `X` register sets the horizontal position of the `middle` of that sprite. (In this system, there is no such thing as "vertical position": if the sprite's horizontal position puts its pixels where the CRT is currently drawing, then those pixels will be drawn.)
 
-To measure the viewing distance from a given tree, look up, down, left, and right from that tree; stop if you reach an edge or at the first tree that is the same height or taller than the tree under consideration. (If a tree is right on the edge, at least one of its viewing distances will be zero.)
+You count the pixels on the CRT: 40 wide and 6 high. This CRT screen draws the top row of pixels left-to-right, then the row below that, and so on. The left-most pixel in each row is in position `0`, and the right-most pixel in each row is in position `39`.
 
-The Elves don't care about distant trees taller than those found by the rules above; the proposed tree house has large **_eaves_** to keep it dry, so they wouldn't be able to see higher than the tree house anyway.
-
-In the example above, consider the middle 5 in the second row:
+Like the CPU, the CRT is tied closely to the clock circuit: the CRT draws **_a single pixel during each cycle_**. Representing each pixel of the screen as a #, here are the cycles during which the first and last pixel in each row are drawn:
 ```
-30373
-25512
-65332
-33549
-35390
+Cycle   1 -> ######################################## <- Cycle  40
+Cycle  41 -> ######################################## <- Cycle  80
+Cycle  81 -> ######################################## <- Cycle 120
+Cycle 121 -> ######################################## <- Cycle 160
+Cycle 161 -> ######################################## <- Cycle 200
+Cycle 201 -> ######################################## <- Cycle 240
 ```
 
-- Looking up, its view is not blocked; it can see `1` tree (of height `3`).
-- Looking left, its view is blocked immediately; it can see only `1` tree (of height `5`, right next to it).
-- Looking right, its view is not blocked; it can see `2` trees.
-- Looking down, its view is blocked eventually; it can see `2` trees (one of height `3`, then the tree of height `5` that blocks its view).
+So, by **carefully timing** the CPU instructions and the CRT drawing operations, you should be able to determine whether the sprite is visible the instant each pixel is drawn. If the sprite is positioned such that one of its three pixels is the pixel currently being drawn, the screen produces a **_lit_** pixel (`#`); otherwise, the screen leaves the pixel **_dark_** (`.`).
 
-A tree's **_scenic score_** is found by **_multiplying together_** its viewing distance in each of the four directions. For this tree, this is `4` (found by multiplying `1 * 1 * 2 * 2`).
-
-However, you can do even better: consider the tree of height 5 in the middle of the fourth row:
+The first few pixels from the larger example above are drawn as follows:
 ```
-30373
-25512
-65332
-33549
-35390
+Sprite position: ###.....................................
+
+Start cycle   1: begin executing addx 15
+During cycle  1: CRT draws pixel in position 0
+Current CRT row: #
+
+During cycle  2: CRT draws pixel in position 1
+Current CRT row: ##
+End of cycle  2: finish executing addx 15 (Register X is now 16)
+Sprite position: ...............###......................
+
+Start cycle   3: begin executing addx -11
+During cycle  3: CRT draws pixel in position 2
+Current CRT row: ##.
+
+During cycle  4: CRT draws pixel in position 3
+Current CRT row: ##..
+End of cycle  4: finish executing addx -11 (Register X is now 5)
+Sprite position: ....###.................................
+
+Start cycle   5: begin executing addx 6
+During cycle  5: CRT draws pixel in position 4
+Current CRT row: ##..#
+
+During cycle  6: CRT draws pixel in position 5
+Current CRT row: ##..##
+End of cycle  6: finish executing addx 6 (Register X is now 11)
+Sprite position: ..........###...........................
+
+Start cycle   7: begin executing addx -3
+During cycle  7: CRT draws pixel in position 6
+Current CRT row: ##..##.
+
+During cycle  8: CRT draws pixel in position 7
+Current CRT row: ##..##..
+End of cycle  8: finish executing addx -3 (Register X is now 8)
+Sprite position: .......###..............................
+
+Start cycle   9: begin executing addx 5
+During cycle  9: CRT draws pixel in position 8
+Current CRT row: ##..##..#
+
+During cycle 10: CRT draws pixel in position 9
+Current CRT row: ##..##..##
+End of cycle 10: finish executing addx 5 (Register X is now 13)
+Sprite position: ............###.........................
+
+Start cycle  11: begin executing addx -1
+During cycle 11: CRT draws pixel in position 10
+Current CRT row: ##..##..##.
+
+During cycle 12: CRT draws pixel in position 11
+Current CRT row: ##..##..##..
+End of cycle 12: finish executing addx -1 (Register X is now 12)
+Sprite position: ...........###..........................
+
+Start cycle  13: begin executing addx -8
+During cycle 13: CRT draws pixel in position 12
+Current CRT row: ##..##..##..#
+
+During cycle 14: CRT draws pixel in position 13
+Current CRT row: ##..##..##..##
+End of cycle 14: finish executing addx -8 (Register X is now 4)
+Sprite position: ...###..................................
+
+Start cycle  15: begin executing addx 13
+During cycle 15: CRT draws pixel in position 14
+Current CRT row: ##..##..##..##.
+
+During cycle 16: CRT draws pixel in position 15
+Current CRT row: ##..##..##..##..
+End of cycle 16: finish executing addx 13 (Register X is now 17)
+Sprite position: ................###.....................
+
+Start cycle  17: begin executing addx 4
+During cycle 17: CRT draws pixel in position 16
+Current CRT row: ##..##..##..##..#
+
+During cycle 18: CRT draws pixel in position 17
+Current CRT row: ##..##..##..##..##
+End of cycle 18: finish executing addx 4 (Register X is now 21)
+Sprite position: ....................###.................
+
+Start cycle  19: begin executing noop
+During cycle 19: CRT draws pixel in position 18
+Current CRT row: ##..##..##..##..##.
+End of cycle 19: finish executing noop
+
+Start cycle  20: begin executing addx -1
+During cycle 20: CRT draws pixel in position 19
+Current CRT row: ##..##..##..##..##..
+
+During cycle 21: CRT draws pixel in position 20
+Current CRT row: ##..##..##..##..##..#
+End of cycle 21: finish executing addx -1 (Register X is now 20)
+Sprite position: ...................###..................
 ```
-- Looking up, its view is blocked at `2` trees (by another tree with a height of `5`).
-- Looking left, its view is not blocked; it can see `2` trees.
-- Looking down, its view is also not blocked; it can see `1` tree.
-- Looking right, its view is blocked at `2` trees (by a massive tree of height `9`).
+Allowing the program to run to completion causes the CRT to produce the following image:
+```
+##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.
+####....####....####....####....####....
+#####.....#####.....#####.....#####.....
+######......######......######......####
+#######.......#######.......#######.....
+```
 
-This tree's scenic score is **_8_** (`2 * 2 * 1 * 2`); this is the ideal spot for the tree house.
+Render the image given by your program. **_What eight capital letters appear on your CRT?_**
 
-Consider each tree on your map. **_What is the highest scenic score possible for any tree?_**

@@ -1,50 +1,53 @@
-import Utils.splitLineBy
-import model.Addx
-import model.Command
-import model.Noop
-import kotlin.io.path.Path
+import model.Monkey
 
 object Runner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val commands =
-            Utils.readFile(Path("calendar-2022/day-10-cathode-ray-tube/src/main/resources/data.txt"))
-                .splitLineBy(" ").map { if (it[0] == "noop") Noop() else Addx(it[1].toInt()) }
 
-        val registerStatesAfterCommands = performCommands(commands)
-
-        println(
-            "Result for part I: ${
-                getSumOfSignalStrengths(
-                    listOf(20, 60, 100, 140, 180, 220),
-                    registerStatesAfterCommands
-                )
-            }"
+        val testMonkeys = listOf(
+            Monkey(
+                items = mutableListOf(79, 98),
+                operation = { old -> old * 19 },
+                test = { worryLevel -> if (worryLevel % 23 == 0L) 2 else 3 },
+            ),
+            Monkey(
+                items = mutableListOf(54, 65, 75, 74),
+                operation = { old -> old + 6 },
+                test = { worryLevel -> if (worryLevel % 19 == 0L) 2 else 0 },
+            ),
+            Monkey(
+                items = mutableListOf(79, 60, 97),
+                operation = { old -> old * old },
+                test = { worryLevel -> if (worryLevel % 13 == 0L) 1 else 3 },
+            ),
+            Monkey(
+                items = mutableListOf(74),
+                operation = { old -> old + 3 },
+                test = { worryLevel -> if (worryLevel % 17 == 0L) 0 else 1 },
+            )
         )
-        println("Result for part II:")
-        drawMessageOnCrt(registerStatesAfterCommands)
+
+        testMonkeys.playRound(20)
+
+        println("Result for part I: ${testMonkeys.getMostActiveMonkeysProduct()}")
     }
 
-    private fun performCommands(commands: List<Command>): List<Int> {
-        val registerStates = mutableListOf(1)
 
-        commands.forEach {
-            when (it) {
-                is Noop -> registerStates.add(registerStates.last())
-                is Addx -> registerStates.addAll(listOf(registerStates.last(), registerStates.last() + it.value))
+    private fun List<Monkey>.playRound(times: Int = 1) {
+        (1..times).forEach { _ ->
+            for (monkeyIdx in this.indices) {
+                for (i in this[monkeyIdx].items.indices) {
+                    this[monkeyIdx].items[i] = this[monkeyIdx].inspectItem(this[monkeyIdx].items[i])
+                    this[monkeyIdx].items[i] = this[monkeyIdx].monkeyGetBored(this[monkeyIdx].items[i])
+                    val index = this[monkeyIdx].throwToAnotherMonkey(this[monkeyIdx].items[i])
+                    this[index].items.add(this[monkeyIdx].items[i])
+                }
+                this[monkeyIdx].items.clear()
             }
         }
-
-        return registerStates
     }
 
-    private fun getSumOfSignalStrengths(signals: List<Int>, registerStates: List<Int>) =
-        signals.sumOf { it * registerStates[it - 1] }
-
-    private fun drawMessageOnCrt(registerStates: List<Int>) {
-        (0 until registerStates.size - 1).map {
-            if (it % 40 in (registerStates[it] - 1..registerStates[it] + 1)) "#" else "."
-        }.chunked(40)
-            .forEach { println(it.joinToString(separator = "")) }
-    }
+    private fun List<Monkey>.getMostActiveMonkeysProduct() = this.map { it.inspectingCount }
+        .sortedByDescending { it }
+        .take(2).reduce { acc, i -> acc * i }
 }

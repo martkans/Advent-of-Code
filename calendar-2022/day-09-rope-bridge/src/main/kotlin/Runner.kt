@@ -10,11 +10,11 @@ object Runner {
             Utils.readFile(Path("calendar-2022/day-09-rope-bridge/src/main/resources/test-data.txt"))
                 .splitLineBy(" ").map { Step(Direction.values().first { dir -> dir.letter == it[0] }, it[1].toInt()) }
 
-//        val visitedPoints = performRopeWalk(steps)
-        val visitedPointsByComplexRope = performComplexRopeWalk(steps)
+        val visitedPoints = performRopeWalk(steps)
+//        val visitedPointsByComplexRope = performComplexRopeWalk(steps)
 
-//        println("Result for part I: ${visitedPoints.size}")
-        println("Result for part II: ${visitedPointsByComplexRope.size}")
+        println("Result for part I: ${visitedPoints.size}")
+//        println("Result for part II: ${visitedPointsByComplexRope.size}")
     }
 
 

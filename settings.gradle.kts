@@ -28,4 +28,5 @@ include(
     "calendar-2022:day-08-treetop-tree-house",
     "calendar-2022:day-09-rope-bridge",
     "calendar-2022:day-10-cathode-ray-tube",
+    "calendar-2022:day-11-monkey-in-the-middle",
 )

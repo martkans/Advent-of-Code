@@ -1,71 +1,307 @@
-## --- Day 8: Treetop Tree House ---
+### --- Day 11: Monkey in the Middle ---
 
-The expedition comes across a peculiar patch of tall trees all planted carefully in a grid. The Elves explain that a previous expedition planted these trees as a reforestation effort. Now, they're curious if this would be a good location for a **_tree house_**.
+As you finally start making your way upriver, you realize your pack is much lighter than you remember. Just then, one of the items from your pack goes flying overhead. Monkeys are playing **_Keep Away_** with your missing things!
 
-First, determine whether there is enough tree cover here to keep a tree house hidden. To do this, you need to count the number of trees that are **_visible from outside the grid_** when looking directly along a row or column.
+To get your stuff back, you need to be able to predict where the monkeys will throw your items. After some careful observation, you realize the monkeys operate based on **_how worried you are about each item_**.
 
-The Elves have already launched a **_quadcopter_** to generate a map with the height of each tree (your puzzle input). For example:
+You take some notes (your puzzle input) on the items each monkey currently has, how worried you are about those items, and how the monkey makes decisions based on your worry level. For example:
 ```
-30373
-25512
-65332
-33549
-35390
+Monkey 0:
+Starting items: 79, 98
+Operation: new = old * 19
+Test: divisible by 23
+If true: throw to monkey 2
+If false: throw to monkey 3
+
+Monkey 1:
+Starting items: 54, 65, 75, 74
+Operation: new = old + 6
+Test: divisible by 19
+If true: throw to monkey 2
+If false: throw to monkey 0
+
+Monkey 2:
+Starting items: 79, 60, 97
+Operation: new = old * old
+Test: divisible by 13
+If true: throw to monkey 1
+If false: throw to monkey 3
+
+Monkey 3:
+Starting items: 74
+Operation: new = old + 3
+Test: divisible by 17
+If true: throw to monkey 0
+If false: throw to monkey 1
 ```
-Each tree is represented as a single digit whose value is its height, where `0` is the shortest and `9` is the tallest.
 
-A tree is **_visible_** if all of the other trees between it and an edge of the grid are **_shorter_** than it. Only consider trees in the same row or column; that is, only look up, down, left, or right from any given tree.
+Each monkey has several attributes:
+- `Starting items` lists your **_worry level_** for each item the monkey is currently holding in the order they will be inspected.
+- `Operation` shows how your worry level changes as that monkey inspects an item. (An operation like `new = old * 5` means that your worry level after the monkey inspected the item is five times whatever your worry level was before inspection.)
+- `Test` shows how the monkey uses your worry level to decide where to throw an item next.
+  - `If true` shows what happens with an item if the `Test` was true.
+  - `If false` shows what happens with an item if the `Test` was false.
 
-All the trees around the edge of the grid are **_visible_** - since they are already on the edge, there are no trees to block the view. In this example, that only leaves the **_interior nine trees_** to consider:
-- The top-left `5` is **_visible_** from the left and top. (It isn't visible from the right or bottom since other trees of height `5` are in the way.)
-- The top-middle `5` is **_visible_** from the top and right.
-- The top-right `1` is not visible from any direction; for it to be visible, there would need to only be trees of height `0` between it and an edge.
-- The left-middle `5` is **_visible_**, but only from the right.
-- The center `3` is not visible from any direction; for it to be visible, there would need to be only trees of at most height `2` between it and an edge.
-- The right-middle `3` is **_visible_** from the right.
-- In the bottom row, the middle `5` is **_visible_**, but the `3` and `4` are not.
+After each monkey inspects an item but before it tests your worry level, your relief that the monkey's inspection didn't damage the item causes your worry level to be **_divided by three_** and rounded down to the nearest integer.
 
-With 16 trees visible on the edge and another 5 visible in the interior, a total of **_21_** trees are visible in this arrangement.
+The monkeys take turns inspecting and throwing items. On a single monkey's **_turn_**, it inspects and throws all of the items it is holding one at a time and in the order listed. Monkey `0` goes first, then monkey `1`, and so on until each monkey has had one turn. The process of each monkey taking a single turn is called a **_round_**.
 
-Consider your map; **_how many trees are visible from outside the grid?_**
+When a monkey throws an item to another monkey, the item goes on the **_end_** of the recipient monkey's list. A monkey that starts a round with no items could end up inspecting and throwing many items by the time its turn comes around. If a monkey is holding no items at the start of its turn, its turn ends.
+
+In the above example, the first round proceeds as follows:
+```
+Monkey 0:
+    Monkey inspects an item with a worry level of 79.
+        Worry level is multiplied by 19 to 1501.
+        Monkey gets bored with item. Worry level is divided by 3 to 500.
+        Current worry level is not divisible by 23.
+        Item with worry level 500 is thrown to monkey 3.
+    Monkey inspects an item with a worry level of 98.
+        Worry level is multiplied by 19 to 1862.
+        Monkey gets bored with item. Worry level is divided by 3 to 620.
+        Current worry level is not divisible by 23.
+        Item with worry level 620 is thrown to monkey 3.
+Monkey 1:
+    Monkey inspects an item with a worry level of 54.
+        Worry level increases by 6 to 60.
+        Monkey gets bored with item. Worry level is divided by 3 to 20.
+        Current worry level is not divisible by 19.
+        Item with worry level 20 is thrown to monkey 0.
+    Monkey inspects an item with a worry level of 65.
+        Worry level increases by 6 to 71.
+        Monkey gets bored with item. Worry level is divided by 3 to 23.
+        Current worry level is not divisible by 19.
+        Item with worry level 23 is thrown to monkey 0.
+    Monkey inspects an item with a worry level of 75.
+        Worry level increases by 6 to 81.
+        Monkey gets bored with item. Worry level is divided by 3 to 27.
+        Current worry level is not divisible by 19.
+        Item with worry level 27 is thrown to monkey 0.
+    Monkey inspects an item with a worry level of 74.
+        Worry level increases by 6 to 80.
+        Monkey gets bored with item. Worry level is divided by 3 to 26.
+        Current worry level is not divisible by 19.
+        Item with worry level 26 is thrown to monkey 0.
+Monkey 2:
+    Monkey inspects an item with a worry level of 79.
+        Worry level is multiplied by itself to 6241.
+        Monkey gets bored with item. Worry level is divided by 3 to 2080.
+        Current worry level is divisible by 13.
+        Item with worry level 2080 is thrown to monkey 1.
+    Monkey inspects an item with a worry level of 60.
+        Worry level is multiplied by itself to 3600.
+        Monkey gets bored with item. Worry level is divided by 3 to 1200.
+        Current worry level is not divisible by 13.
+        Item with worry level 1200 is thrown to monkey 3.
+    Monkey inspects an item with a worry level of 97.
+        Worry level is multiplied by itself to 9409.
+        Monkey gets bored with item. Worry level is divided by 3 to 3136.
+        Current worry level is not divisible by 13.
+        Item with worry level 3136 is thrown to monkey 3.
+Monkey 3:
+    Monkey inspects an item with a worry level of 74.
+        Worry level increases by 3 to 77.
+        Monkey gets bored with item. Worry level is divided by 3 to 25.
+        Current worry level is not divisible by 17.
+        Item with worry level 25 is thrown to monkey 1.
+    Monkey inspects an item with a worry level of 500.
+        Worry level increases by 3 to 503.
+        Monkey gets bored with item. Worry level is divided by 3 to 167.
+        Current worry level is not divisible by 17.
+        Item with worry level 167 is thrown to monkey 1.
+    Monkey inspects an item with a worry level of 620.
+        Worry level increases by 3 to 623.
+        Monkey gets bored with item. Worry level is divided by 3 to 207.
+        Current worry level is not divisible by 17.
+        Item with worry level 207 is thrown to monkey 1.
+    Monkey inspects an item with a worry level of 1200.
+        Worry level increases by 3 to 1203.
+        Monkey gets bored with item. Worry level is divided by 3 to 401.
+        Current worry level is not divisible by 17.
+        Item with worry level 401 is thrown to monkey 1.
+    Monkey inspects an item with a worry level of 3136.
+        Worry level increases by 3 to 3139.
+        Monkey gets bored with item. Worry level is divided by 3 to 1046.
+        Current worry level is not divisible by 17.
+        Item with worry level 1046 is thrown to monkey 1.
+```
+
+After round 1, the monkeys are holding items with these worry levels:
+```
+Monkey 0: 20, 23, 27, 26
+Monkey 1: 2080, 25, 167, 207, 401, 1046
+Monkey 2:
+Monkey 3:
+```
+Monkeys 2 and 3 aren't holding any items at the end of the round; they both inspected items during the round and threw them all before the round ended.
+
+This process continues for a few more rounds:
+```
+After round 2, the monkeys are holding items with these worry levels:
+Monkey 0: 695, 10, 71, 135, 350
+Monkey 1: 43, 49, 58, 55, 362
+Monkey 2:
+Monkey 3:
+
+After round 3, the monkeys are holding items with these worry levels:
+Monkey 0: 16, 18, 21, 20, 122
+Monkey 1: 1468, 22, 150, 286, 739
+Monkey 2:
+Monkey 3:
+
+After round 4, the monkeys are holding items with these worry levels:
+Monkey 0: 491, 9, 52, 97, 248, 34
+Monkey 1: 39, 45, 43, 258
+Monkey 2:
+Monkey 3:
+
+After round 5, the monkeys are holding items with these worry levels:
+Monkey 0: 15, 17, 16, 88, 1037
+Monkey 1: 20, 110, 205, 524, 72
+Monkey 2:
+Monkey 3:
+
+After round 6, the monkeys are holding items with these worry levels:
+Monkey 0: 8, 70, 176, 26, 34
+Monkey 1: 481, 32, 36, 186, 2190
+Monkey 2:
+Monkey 3:
+
+After round 7, the monkeys are holding items with these worry levels:
+Monkey 0: 162, 12, 14, 64, 732, 17
+Monkey 1: 148, 372, 55, 72
+Monkey 2:
+Monkey 3:
+
+After round 8, the monkeys are holding items with these worry levels:
+Monkey 0: 51, 126, 20, 26, 136
+Monkey 1: 343, 26, 30, 1546, 36
+Monkey 2:
+Monkey 3:
+
+After round 9, the monkeys are holding items with these worry levels:
+Monkey 0: 116, 10, 12, 517, 14
+Monkey 1: 108, 267, 43, 55, 288
+Monkey 2:
+Monkey 3:
+
+After round 10, the monkeys are holding items with these worry levels:
+Monkey 0: 91, 16, 20, 98
+Monkey 1: 481, 245, 22, 26, 1092, 30
+Monkey 2:
+Monkey 3:
+
+...
+
+After round 15, the monkeys are holding items with these worry levels:
+Monkey 0: 83, 44, 8, 184, 9, 20, 26, 102
+Monkey 1: 110, 36
+Monkey 2:
+Monkey 3:
+
+...
+
+After round 20, the monkeys are holding items with these worry levels:
+Monkey 0: 10, 12, 14, 26, 34
+Monkey 1: 245, 93, 53, 199, 115
+Monkey 2:
+Monkey 3:
+```
+Chasing all of the monkeys at once is impossible; you're going to have to focus on the **_two most active monkeys_** if you want any hope of getting your stuff back. Count the **_total number of times each monkey inspects items_** over 20 rounds:
+```
+Monkey 0 inspected items 101 times.
+Monkey 1 inspected items 95 times.
+Monkey 2 inspected items 7 times.
+Monkey 3 inspected items 105 times.
+```
+
+In this example, the two most active monkeys inspected items 101 and 105 times. The level of **_monkey business_** in this situation can be found by multiplying these together: **_10605_**.
+
+Figure out which monkeys to chase by counting how many items they inspect over 20 rounds. **_What is the level of monkey business after 20 rounds of stuff-slinging simian shenanigans?_**
 
 ### --- Part Two ---
 
-Content with the amount of tree cover available, the Elves just need to know the best spot to build their tree house: they would like to be able to see a lot of **_trees_**.
+You're worried you might not ever get your items back. So worried, in fact, that your relief that a monkey's inspection didn't damage an item **_no longer causes your worry level to be divided by three_**.
 
-To measure the viewing distance from a given tree, look up, down, left, and right from that tree; stop if you reach an edge or at the first tree that is the same height or taller than the tree under consideration. (If a tree is right on the edge, at least one of its viewing distances will be zero.)
+Unfortunately, that relief was all that was keeping your worry levels from reaching **_ridiculous levels_**. You'll need to **_find another way to keep your worry levels manageable_**.
 
-The Elves don't care about distant trees taller than those found by the rules above; the proposed tree house has large **_eaves_** to keep it dry, so they wouldn't be able to see higher than the tree house anyway.
+At this rate, you might be putting up with these monkeys for a **_very long time_** - possibly **_10000 rounds_**!
 
-In the example above, consider the middle 5 in the second row:
+With these new rules, you can still figure out the monkey business after 10000 rounds. Using the same example above:
 ```
-30373
-25512
-65332
-33549
-35390
+== After round 1 ==
+Monkey 0 inspected items 2 times.
+Monkey 1 inspected items 4 times.
+Monkey 2 inspected items 3 times.
+Monkey 3 inspected items 6 times.
+
+== After round 20 ==
+Monkey 0 inspected items 99 times.
+Monkey 1 inspected items 97 times.
+Monkey 2 inspected items 8 times.
+Monkey 3 inspected items 103 times.
+
+== After round 1000 ==
+Monkey 0 inspected items 5204 times.
+Monkey 1 inspected items 4792 times.
+Monkey 2 inspected items 199 times.
+Monkey 3 inspected items 5192 times.
+
+== After round 2000 ==
+Monkey 0 inspected items 10419 times.
+Monkey 1 inspected items 9577 times.
+Monkey 2 inspected items 392 times.
+Monkey 3 inspected items 10391 times.
+
+== After round 3000 ==
+Monkey 0 inspected items 15638 times.
+Monkey 1 inspected items 14358 times.
+Monkey 2 inspected items 587 times.
+Monkey 3 inspected items 15593 times.
+
+== After round 4000 ==
+Monkey 0 inspected items 20858 times.
+Monkey 1 inspected items 19138 times.
+Monkey 2 inspected items 780 times.
+Monkey 3 inspected items 20797 times.
+
+== After round 5000 ==
+Monkey 0 inspected items 26075 times.
+Monkey 1 inspected items 23921 times.
+Monkey 2 inspected items 974 times.
+Monkey 3 inspected items 26000 times.
+
+== After round 6000 ==
+Monkey 0 inspected items 31294 times.
+Monkey 1 inspected items 28702 times.
+Monkey 2 inspected items 1165 times.
+Monkey 3 inspected items 31204 times.
+
+== After round 7000 ==
+Monkey 0 inspected items 36508 times.
+Monkey 1 inspected items 33488 times.
+Monkey 2 inspected items 1360 times.
+Monkey 3 inspected items 36400 times.
+
+== After round 8000 ==
+Monkey 0 inspected items 41728 times.
+Monkey 1 inspected items 38268 times.
+Monkey 2 inspected items 1553 times.
+Monkey 3 inspected items 41606 times.
+
+== After round 9000 ==
+Monkey 0 inspected items 46945 times.
+Monkey 1 inspected items 43051 times.
+Monkey 2 inspected items 1746 times.
+Monkey 3 inspected items 46807 times.
+
+== After round 10000 ==
+Monkey 0 inspected items 52166 times.
+Monkey 1 inspected items 47830 times.
+Monkey 2 inspected items 1938 times.
+Monkey 3 inspected items 52013 times.
 ```
 
-- Looking up, its view is not blocked; it can see `1` tree (of height `3`).
-- Looking left, its view is blocked immediately; it can see only `1` tree (of height `5`, right next to it).
-- Looking right, its view is not blocked; it can see `2` trees.
-- Looking down, its view is blocked eventually; it can see `2` trees (one of height `3`, then the tree of height `5` that blocks its view).
+After 10000 rounds, the two most active monkeys inspected items 52166 and 52013 times. Multiplying these together, the level of **_monkey business_** in this situation is now **_2713310158_**.
 
-A tree's **_scenic score_** is found by **_multiplying together_** its viewing distance in each of the four directions. For this tree, this is `4` (found by multiplying `1 * 1 * 2 * 2`).
-
-However, you can do even better: consider the tree of height 5 in the middle of the fourth row:
-```
-30373
-25512
-65332
-33549
-35390
-```
-- Looking up, its view is blocked at `2` trees (by another tree with a height of `5`).
-- Looking left, its view is not blocked; it can see `2` trees.
-- Looking down, its view is also not blocked; it can see `1` tree.
-- Looking right, its view is blocked at `2` trees (by a massive tree of height `9`).
-
-This tree's scenic score is **_8_** (`2 * 2 * 1 * 2`); this is the ideal spot for the tree house.
-
-Consider each tree on your map. **_What is the highest scenic score possible for any tree?_**
+Worry levels are no longer divided by three after each item is inspected; you'll need to find another way to keep your worry levels manageable. Starting again from the initial state in your puzzle input, **_what is the level of monkey business after 10000 rounds_**?
