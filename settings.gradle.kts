@@ -26,4 +26,6 @@ include(
     "calendar-2022:day-06-tuning-trouble",
     "calendar-2022:day-07-no-space-left-on-device",
     "calendar-2022:day-08-treetop-tree-house",
+    "calendar-2022:day-09-rope-bridge",
+    "calendar-2022:day-10-cathode-ray-tube",
 )
