@@ -12,7 +12,7 @@ class Monkey(
         return operation.invoke(currentWorryLevel)
     }
 
-    fun monkeyGetBored(currentWorryLevel: Long) = currentWorryLevel/3
+    fun monkeyGetBored(currentWorryLevel: Long) = currentWorryLevel / 3
 
     fun throwToAnotherMonkey(currentWorryLevel: Long) = test.invoke(currentWorryLevel)
 }

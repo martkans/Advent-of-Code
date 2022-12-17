@@ -29,4 +29,10 @@ include(
     "calendar-2022:day-09-rope-bridge",
     "calendar-2022:day-10-cathode-ray-tube",
     "calendar-2022:day-11-monkey-in-the-middle",
+    "calendar-2022:day-12-hill-climbing-algorithm",
+    "calendar-2022:day-13-distress-signal",
+    "calendar-2022:day-14-regolith-reservoir",
+    "calendar-2022:day-15-beacon-exclusion-zone",
+    "calendar-2022:day-16-proboscidea-volcanium",
+    "calendar-2022:day-17-pyroclastic-flow",
 )
