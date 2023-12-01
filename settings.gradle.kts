@@ -35,4 +35,7 @@ include(
     "calendar-2022:day-15-beacon-exclusion-zone",
     "calendar-2022:day-16-proboscidea-volcanium",
     "calendar-2022:day-17-pyroclastic-flow",
+    // 2023
+    "calendar-2023",
+    "calendar-2023:day-01-trebuchet",
 )

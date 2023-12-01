@@ -1,7 +1,7 @@
 val appVersion: String by project.rootProject.extra
 
 plugins {
-    kotlin("jvm") version "1.7.21"
+    kotlin("jvm") version "1.9.21"
 }
 
 allprojects {
