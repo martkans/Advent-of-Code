@@ -1,6 +1,4 @@
 import kotlin.io.path.Path
-import kotlin.math.max
-import kotlin.time.measureTime
 
 object Runner {
     @JvmStatic
@@ -9,11 +7,11 @@ object Runner {
             Utils.readFile(Path("calendar-2023/day-05-if-you-give-a-seed-a-fertilizer/src/main/resources/data.txt"))
                 .filter { it.isNotEmpty() }
         val seeds = extractSeeds(data[0])
-        val maps = extractProductionStepsMaps(data.subList(1, data.size))
-        println("Result for I: ${seeds.plantSeeds(maps).min()}")
+        val plantingSteps = extractPlantingSteps(data.subList(1, data.size))
+        println("Result for I: ${seeds.plantSeeds(plantingSteps).min()}")
 
         val seedRanges = extractSeedRanges(data[0])
-        println("Result for II: ${seedRanges.plantSeedRanges(maps).minOf { it.start }}")
+        println("Result for II: ${seedRanges.plantSeedRanges(plantingSteps).minOf { it.start }}")
 
     }
 
@@ -23,59 +21,68 @@ object Runner {
         NUM_REGEX.findAll(line).map { it.value.toLong() }.toList()
             .chunked(2) { SeedRange(it.first(), it.first() + it.last() - 1) }
 
-    private fun List<SeedRange>.plantSeedRanges(maps: Map<PART, ProductionStepMaps>): List<SeedRange> {
+    private fun List<SeedRange>.plantSeedRanges(maps: Map<Step, ProductionStepMaps>): List<SeedRange> {
         var seedRanges = this
-        var status = PART.seed
-        while (status != PART.location) {
+        var status = Step.seed
+        while (status != Step.location) {
             seedRanges = seedRanges.flatMap { it.plantSeeds(maps) }
             status = seedRanges.first().step
         }
         return seedRanges
     }
 
-    private fun List<Long>.plantSeeds(maps: Map<PART, ProductionStepMaps>): List<Long> {
-        var source = PART.seed
+    private fun List<Long>.plantSeeds(maps: Map<Step, ProductionStepMaps>): List<Long> {
+        var source = Step.seed
         var seedsInProcess = this
         do {
             seedsInProcess = seedsInProcess.map { seed ->
                 maps[source]!!.determineDestination(seed)
             }
             source = maps[source]!!.destination
-        } while (source != PART.location)
+        } while (source != Step.location)
         return seedsInProcess
     }
 
-    private fun SeedRange.plantSeeds(maps: Map<PART, ProductionStepMaps>): List<SeedRange> {
-        val transformation = maps[this.step]!!
-        val ranges = transformation.maps.filter { it.isInRange(this) }
-            .map { this.splitSeedRange(it) to it.destinationRangeStart - it.sourceRangeStart }
+    private fun SeedRange.plantSeeds(maps: Map<Step, ProductionStepMaps>): List<SeedRange> {
+        val productionStep = maps[this.step]!!
+
+        val rangesWithModifiers = productionStep.maps.filter { it.isInSeedRange(this) }
+            .map { this.splitSeedRange(it) to it.modifier }
             .sortedBy { it.first.start }.toMutableList()
-        if (ranges.isNotEmpty()) {
-            if (ranges.first().first.start > this.start) {
-                ranges.add(0, SeedRange(this.start, ranges.first().first.start - 1, this.step) to 0)
+
+        rangesWithModifiers.fillBlanks(this)
+        rangesWithModifiers.modifySeedRanges(productionStep.destination)
+        return rangesWithModifiers.map { it.first }
+    }
+
+    private fun MutableList<Pair<SeedRange, Long>>.fillBlanks(sourceSeedRange: SeedRange) {
+        if (this.isNotEmpty()) {
+            if (this.first().first.start > sourceSeedRange.start) {
+                this.add(0, SeedRange(sourceSeedRange.start, this.first().first.start - 1, sourceSeedRange.step) to 0)
             }
-            if (ranges.last().first.end < this.end) {
-                ranges.add(SeedRange(ranges.last().first.end + 1, this.end, this.step) to 0)
+            if (this.last().first.end < sourceSeedRange.end) {
+                this.add(SeedRange(this.last().first.end + 1, sourceSeedRange.end, sourceSeedRange.step) to 0)
             }
         } else {
-            ranges.add(this to 0)
+            this.add(sourceSeedRange to 0)
         }
 
-        for (i in (0 until ranges.size - 1)) {
-            if (ranges[i + 1].first.start - ranges[i].first.end > 1) {
-                ranges.add(SeedRange(ranges[i].first.end + 1, ranges[i + 1].first.start - 1, this.step) to 0)
+        for (i in (0 until this.size - 1)) {
+            if (this[i + 1].first.start - this[i].first.end > 1) {
+                this.add(SeedRange(this[i].first.end + 1, this[i + 1].first.start - 1, sourceSeedRange.step) to 0)
             }
         }
+    }
 
-        ranges.forEach { it.first.transform(it.second, transformation.destination) }
-        return ranges.map { it.first }
+    private fun List<Pair<SeedRange, Long>>.modifySeedRanges(nextStep: Step) {
+        this.forEach { (range, modifier) -> range.transform(modifier, nextStep) }
     }
 
     private fun extractSeeds(line: String) = NUM_REGEX.findAll(line).map { it.value.toLong() }.toList()
 
-    private fun extractProductionStepsMaps(lines: List<String>): Map<PART, ProductionStepMaps> {
-        val maps = mutableMapOf<PART, ProductionStepMaps>()
-        var lastKey = PART.seed
+    private fun extractPlantingSteps(lines: List<String>): Map<Step, ProductionStepMaps> {
+        val maps = mutableMapOf<Step, ProductionStepMaps>()
+        var lastKey = Step.seed
         lines.forEach {
             if (it[0].isDigit()) {
                 NUM_REGEX.findAll(it).map { it.value.toLong() }.toList().let { nums ->
@@ -84,7 +91,7 @@ object Runner {
                     )
                 }
             } else {
-                val (source, dest) = it.substringBefore(" ").split("-to-").map { PART.valueOf(it) }
+                val (source, dest) = it.substringBefore(" ").split("-to-").map { Step.valueOf(it) }
                 maps[source] = ProductionStepMaps(source, dest)
                 lastKey = source
             }
@@ -93,13 +100,13 @@ object Runner {
         return maps
     }
 
-    enum class PART {
+    enum class Step {
         seed, soil, fertilizer, water, light, temperature, humidity, location
     }
 
     data class ProductionStepMaps(
-        val source: PART,
-        val destination: PART,
+        val source: Step,
+        val destination: Step,
         val maps: MutableList<RangeMap> = mutableListOf()
     ) {
         fun determineDestination(source: Long): Long =
@@ -111,14 +118,16 @@ object Runner {
         val destinationRangeStart: Long,
         val rangeLength: Long
     ) {
+        val modifier = destinationRangeStart - sourceRangeStart
+
         fun isSourceInRange(source: Long) = source >= sourceRangeStart && source < sourceRangeStart.plus(rangeLength)
         fun calculateDestination(source: Long) = destinationRangeStart + (source - sourceRangeStart)
 
-        fun isInRange(range: SeedRange) =
+        fun isInSeedRange(range: SeedRange) =
             sourceRangeStart <= range.end && sourceRangeStart.plus(rangeLength) > range.start
     }
 
-    data class SeedRange(var start: Long, var end: Long, var step: PART = PART.seed)
+    data class SeedRange(var start: Long, var end: Long, var step: Step = Step.seed)
 
     private fun SeedRange.splitSeedRange(range: RangeMap): SeedRange = SeedRange(
         start = maxOf(start, range.sourceRangeStart),
@@ -127,7 +136,7 @@ object Runner {
     )
 
 
-    private fun SeedRange.transform(addVal: Long, step: PART) {
+    private fun SeedRange.transform(addVal: Long, step: Step) {
         this.apply {
             this.step = step
             this.start += addVal
