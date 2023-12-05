@@ -41,4 +41,5 @@ include(
     "calendar-2023:day-02-cube-conundrum",
     "calendar-2023:day-03-gear-ratios",
     "calendar-2023:day-04-scratchcards",
+    "calendar-2023:day-05-if-you-give-a-seed-a-fertilizer",
 )
