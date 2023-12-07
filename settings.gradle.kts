@@ -43,4 +43,5 @@ include(
     "calendar-2023:day-04-scratchcards",
     "calendar-2023:day-05-if-you-give-a-seed-a-fertilizer",
     "calendar-2023:day-06-wait-for-it",
+    "calendar-2023:day-07-camel-cards",
 )
