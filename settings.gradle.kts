@@ -45,4 +45,5 @@ include(
     "calendar-2023:day-06-wait-for-it",
     "calendar-2023:day-07-camel-cards",
     "calendar-2023:day-08-haunted-wasteland",
+    "calendar-2023:day-09-mirage-maintenance",
 )
