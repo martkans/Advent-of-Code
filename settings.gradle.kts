@@ -47,4 +47,5 @@ include(
     "calendar-2023:day-08-haunted-wasteland",
     "calendar-2023:day-09-mirage-maintenance",
     "calendar-2023:day-10-pipe-maze",
+    "calendar-2023:day-11-cosmic-expansion",
 )
