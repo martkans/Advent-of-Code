@@ -65,6 +65,7 @@ object Runner {
             ).flatten()
         }
 
+        // tailrec?
         fun createAndCountConfigurations(a: String = ""): Int {
             var idx = a.length
             val b = StringBuilder(a)
