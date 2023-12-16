@@ -50,4 +50,5 @@ include(
     "calendar-2023:day-11-cosmic-expansion",
     "calendar-2023:day-12-hot-springs",
     "calendar-2023:day-13-point-of-incidence",
+    "calendar-2023:day-14-parabolic-reflector-dish",
 )
