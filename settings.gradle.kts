@@ -51,4 +51,5 @@ include(
     "calendar-2023:day-12-hot-springs",
     "calendar-2023:day-13-point-of-incidence",
     "calendar-2023:day-14-parabolic-reflector-dish",
+    "calendar-2023:day-15-lens-library",
 )
