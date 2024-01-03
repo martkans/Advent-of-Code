@@ -52,4 +52,5 @@ include(
     "calendar-2023:day-13-point-of-incidence",
     "calendar-2023:day-14-parabolic-reflector-dish",
     "calendar-2023:day-15-lens-library",
+    "calendar-2023:day-16-the-floor-will-be-lava",
 )
